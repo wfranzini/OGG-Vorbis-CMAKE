@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project (vorbis)
 
-set(SOURCE_LIB
+set(VORBIS_SOURCE_LIB
 ${CMAKE_CURRENT_SOURCE_DIR}/lib/analysis.c
 ${CMAKE_CURRENT_SOURCE_DIR}/lib/bitrate.c
 ${CMAKE_CURRENT_SOURCE_DIR}/lib/block.c
@@ -22,20 +22,29 @@ ${CMAKE_CURRENT_SOURCE_DIR}/lib/res0.c
 ${CMAKE_CURRENT_SOURCE_DIR}/lib/sharedbook.c
 ${CMAKE_CURRENT_SOURCE_DIR}/lib/smallft.c
 ${CMAKE_CURRENT_SOURCE_DIR}/lib/synthesis.c
-${CMAKE_CURRENT_SOURCE_DIR}/lib/vorbisenc.c
+
 ${CMAKE_CURRENT_SOURCE_DIR}/lib/window.c
-${CMAKE_CURRENT_SOURCE_DIR}/lib/vorbisfile.c
+
 )
 
-add_library(${PROJECT_NAME} STATIC ${SOURCE_LIB})
+add_library(${PROJECT_NAME} STATIC ${VORBIS_SOURCE_LIB})
+
 
 target_include_directories(${PROJECT_NAME} 
 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+add_library (vorbisfile STATIC ${CMAKE_CURRENT_SOURCE_DIR}/lib/vorbisfile.c)
+target_include_directories (vorbisfile PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+add_library (vorbisenc STATIC ${CMAKE_CURRENT_SOURCE_DIR}/lib/vorbisenc.c)
+target_include_directories (vorbisenc	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ogg)
+target_link_libraries(${PROJECT_NAME} ogg)
+target_link_libraries(vorbisenc vorbis)
+target_link_libraries(vorbisfile vorbis)
 
